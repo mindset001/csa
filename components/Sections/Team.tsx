@@ -1,11 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { TeamMember } from '../../types';
+import Ahmad from '../../images/ahmad.jpeg';
+import Zubair from '../../images/zubair.jpeg';
 
 const team: TeamMember[] = [
   {
     id: 1,
-    name: 'Asma\'u Wali',
+    name: 'Dr. Asmau Wali',
     role: 'Chief Executive Officer (CEO)',
     imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop'
   },
@@ -13,13 +15,13 @@ const team: TeamMember[] = [
     id: 2,
     name: 'Ahmad Tambaya',
     role: 'Chief Technology Officer (CTO)',
-    imageUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1000&auto=format&fit=crop'
+    imageUrl: Ahmad
   },
   {
     id: 3,
-    name: 'Zainab Bello',
-    role: 'Chief Operating Officer (COO)',
-    imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1000&auto=format&fit=crop'
+    name: 'Zubair Kazaure',
+    role: 'Founder/ Cyber Safety Lead',
+    imageUrl: Zubair
   }
 ];
 
