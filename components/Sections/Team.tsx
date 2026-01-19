@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { TeamMember } from '../../types';
 import Ahmad from '../../images/ahmad.jpeg';
-import Zubair from '../../images/zubair.jpeg';
+import Zubair from '../../images/ahmad2.jpeg';
 
 const team: TeamMember[] = [
   {
@@ -45,7 +45,7 @@ export const Team: React.FC = () => {
               className="text-center"
             >
               <div className="w-40 h-40 mx-auto mb-4 rounded-full overflow-hidden border-2 border-slate-100">
-                <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover" />
+                <img src={member.imageUrl} alt={member.name} className="w-full h-full object-cover object-center" />
               </div>
               <h4 className="text-lg font-bold text-slate-900">{member.name}</h4>
               <span className="text-brand-cyan text-sm font-bold uppercase tracking-wider block mb-2">{member.role}</span>
