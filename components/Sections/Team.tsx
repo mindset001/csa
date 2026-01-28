@@ -3,13 +3,14 @@ import { motion } from 'framer-motion';
 import { TeamMember } from '../../types';
 import Ahmad from '../../images/ahmad.jpeg';
 import Zubair from '../../images/ahmad2.jpeg';
+import Avatar from '../../images/avatar.jpg';
 
 const team: TeamMember[] = [
   {
     id: 1,
     name: 'Dr. Asmau Wali',
     role: 'Chief Executive Officer (CEO)',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop'
+    imageUrl: Avatar
   },
   {
     id: 2,
