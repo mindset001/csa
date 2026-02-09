@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Send, Calendar, Clock, ArrowRight } from 'lucide-react';
+import { Send, Calendar, Clock, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { MagnetButton } from '../UI/MagnetButton';
 
 export const Contact: React.FC = () => {
   const [targetDate, setTargetDate] = useState<Date | null>(null);
   const [countdown, setCountdown] = useState<string>("Calculating...");
+  
+  // Contact form state
+  const [name, setName] = useState('');
+  const [jobTitle, setJobTitle] = useState('');
+  const [company, setCompany] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [statusMessage, setStatusMessage] = useState('');
+  
+  // Webinar registration state
+  const [webinarEmail, setWebinarEmail] = useState('');
+  const [webinarStatus, setWebinarStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [webinarMessage, setWebinarMessage] = useState('');
 
   useEffect(() => {
     const getNextEventDate = () => {
@@ -60,6 +75,111 @@ export const Contact: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!name || !email || !message) {
+      setStatus('error');
+      setStatusMessage('Please fill in all required fields');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setStatus('error');
+      setStatusMessage('Please enter a valid email address');
+      return;
+    }
+
+    setStatus('loading');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, jobTitle, company, email, phone, message }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus('success');
+        setStatusMessage('✅ Thank you! We\'ll get back to you soon.');
+        setName('');
+        setJobTitle('');
+        setCompany('');
+        setEmail('');
+        setPhone('');
+        setMessage('');
+        
+        setTimeout(() => {
+          setStatus('idle');
+          setStatusMessage('');
+        }, 5000);
+      } else {
+        setStatus('error');
+        setStatusMessage(data.message || 'Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting contact form:', error);
+      setStatus('error');
+      setStatusMessage('Failed to connect to server. Please try again later.');
+    }
+  };
+
+  const handleWebinarSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!webinarEmail) {
+      setWebinarStatus('error');
+      setWebinarMessage('Please enter your email');
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(webinarEmail)) {
+      setWebinarStatus('error');
+      setWebinarMessage('Please enter a valid email address');
+      return;
+    }
+
+    setWebinarStatus('loading');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/webinar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: webinarEmail }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setWebinarStatus('success');
+        setWebinarMessage('✅ Registered successfully!');
+        setWebinarEmail('');
+        
+        setTimeout(() => {
+          setWebinarStatus('idle');
+          setWebinarMessage('');
+        }, 5000);
+      } else {
+        setWebinarStatus('error');
+        setWebinarMessage(data.message || 'Something went wrong. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error registering for webinar:', error);
+      setWebinarStatus('error');
+      setWebinarMessage('Failed to connect to server. Please try again later.');
+    }
+  };
+
   return (
     <section id="contact" className="py-24 relative bg-white">
       <div className="container mx-auto px-6">
@@ -72,47 +192,97 @@ export const Contact: React.FC = () => {
               <p className="text-slate-600">Everything starts with a conversation. But there’s other ways to get in touch with us.</p>
             </div>
 
-            <form className="space-y-6 bg-slate-50 border border-slate-200 p-8 rounded-xl shadow-lg" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-6 bg-slate-50 border border-slate-200 p-8 rounded-xl shadow-lg" onSubmit={handleContactSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input 
                   type="text" 
-                  placeholder="Name" 
+                  placeholder="Name *" 
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   className="bg-white border-b border-gray-300 p-3 w-full focus:outline-none focus:border-brand-cyan text-black transition-colors rounded-t"
+                  required
+                  disabled={status === 'loading'}
                 />
                 <input 
                   type="text" 
                   placeholder="Job Title" 
+                  value={jobTitle}
+                  onChange={(e) => setJobTitle(e.target.value)}
                   className="bg-white border-b border-gray-300 p-3 w-full focus:outline-none focus:border-brand-cyan text-black transition-colors rounded-t"
+                  disabled={status === 'loading'}
                 />
               </div>
               
               <input 
                 type="text" 
                 placeholder="Company" 
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
                 className="bg-white border-b border-gray-300 p-3 w-full focus:outline-none focus:border-brand-cyan text-black transition-colors rounded-t"
+                disabled={status === 'loading'}
               />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <input 
                   type="email" 
-                  placeholder="Email" 
+                  placeholder="Email *" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="bg-white border-b border-gray-300 p-3 w-full focus:outline-none focus:border-brand-cyan text-black transition-colors rounded-t"
+                  required
+                  disabled={status === 'loading'}
                 />
                 <input 
                   type="text" 
                   placeholder="Phone" 
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="bg-white border-b border-gray-300 p-3 w-full focus:outline-none focus:border-brand-cyan text-black transition-colors rounded-t"
+                  disabled={status === 'loading'}
                 />
               </div>
               
               <textarea 
-                placeholder="A summary of what you'd like to discuss:" 
+                placeholder="A summary of what you'd like to discuss: *" 
                 rows={4}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 className="bg-white border border-gray-300 p-3 w-full rounded-md focus:outline-none focus:border-brand-cyan text-black transition-colors"
+                required
+                disabled={status === 'loading'}
               />
 
-              <MagnetButton variant="primary" className="w-full md:w-auto">
-                Send Message <Send size={18} />
+              {statusMessage && (
+                <div className={`flex items-center gap-2 px-4 py-3 rounded-lg ${
+                  status === 'success'
+                    ? 'bg-green-500/10 border border-green-500/20 text-green-600'
+                    : 'bg-red-500/10 border border-red-500/20 text-red-600'
+                }`}>
+                  {status === 'success' ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    <AlertCircle className="w-5 h-5" />
+                  )}
+                  <span className="text-sm">{statusMessage}</span>
+                </div>
+              )}
+
+              <MagnetButton 
+                type="submit"
+                variant="primary" 
+                disabled={status === 'loading'}
+                className="w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {status === 'loading' ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Sending...</span>
+                  </>
+                ) : (
+                  <>
+                    Send Message <Send size={18} />
+                  </>
+                )}
               </MagnetButton>
             </form>
           </div>
@@ -142,16 +312,38 @@ export const Contact: React.FC = () => {
 
                <div className="text-center">
                  <h4 className="text-white mb-4 font-medium">Register for Updates</h4>
-                 <div className="flex gap-2">
-                   <input 
-                     type="email" 
-                     placeholder="email address" 
-                     className="flex-1 p-3 rounded bg-white text-black focus:outline-none"
-                   />
-                   <button className="bg-brand-cyan text-white font-bold px-6 py-3 rounded hover:bg-brand-light transition-colors">
-                     Register
-                   </button>
-                 </div>
+                 <form onSubmit={handleWebinarSubmit} className="space-y-3">
+                   <div className="flex gap-2">
+                     <input 
+                       type="email" 
+                       placeholder="email address" 
+                       value={webinarEmail}
+                       onChange={(e) => setWebinarEmail(e.target.value)}
+                       className="flex-1 p-3 rounded bg-white text-black focus:outline-none"
+                       disabled={webinarStatus === 'loading'}
+                     />
+                     <button 
+                       type="submit"
+                       disabled={webinarStatus === 'loading'}
+                       className="bg-brand-cyan text-white font-bold px-6 py-3 rounded hover:bg-brand-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                     >
+                       {webinarStatus === 'loading' ? (
+                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                       ) : (
+                         'Register'
+                       )}
+                     </button>
+                   </div>
+                   {webinarMessage && (
+                     <div className={`text-sm px-3 py-2 rounded ${
+                       webinarStatus === 'success'
+                         ? 'bg-green-500/20 text-green-300'
+                         : 'bg-red-500/20 text-red-300'
+                     }`}>
+                       {webinarMessage}
+                     </div>
+                   )}
+                 </form>
                </div>
             </div>
           </div>

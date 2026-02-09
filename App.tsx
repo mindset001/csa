@@ -1,29 +1,35 @@
 import React from 'react';
-import { Navbar } from './components/Layout/Navbar';
-import { Hero } from './components/Sections/Hero';
-import { Methodology } from './components/Sections/Methodology';
-import { About } from './components/Sections/About';
-import { Services } from './components/Sections/Services';
-import { WhyChooseUs } from './components/Sections/WhyChooseUs';
-import { Team } from './components/Sections/Team';
-import { Newsletter } from './components/Sections/Newsletter';
-import { Contact } from './components/Sections/Contact';
-import { Footer } from './components/Layout/Footer';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HomePage } from './components/Pages/HomePage';
+import { AdminLogin } from './components/Admin/AdminLogin';
+import { AdminDashboard } from './components/Admin/AdminDashboard';
+import { ProtectedRoute } from './components/Admin/ProtectedRoute';
 
 function App() {
   return (
-    <main className="bg-[#0d2535] text-white min-h-screen selection:bg-brand-cyan selection:text-brand-darkest">
-      <Navbar />
-      <Hero />
-      <Methodology />
-      <Services />
-      <About />
-      <Team />
-      <WhyChooseUs />
-      <Newsletter />
-      <Contact />
-      <Footer />
-    </main>
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<HomePage />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        
+        {/* Protected Admin Routes */}
+        <Route 
+          path="/admin/dashboard" 
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Redirect /admin to /admin/login */}
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+        
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
 

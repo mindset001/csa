@@ -28,33 +28,37 @@ export const Newsletter: React.FC = () => {
 
     setStatus('loading');
     
-    // Simulate API call - Replace this with actual backend integration
     try {
-      // For now, we'll simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Store in localStorage as a temporary solution
-      const waitlist = JSON.parse(localStorage.getItem('csaWaitlist') || '[]');
-      waitlist.push({ 
-        name, 
-        email, 
-        timestamp: new Date().toISOString() 
+      // Call backend API
+      const response = await fetch('http://localhost:5000/api/waitlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email }),
       });
-      localStorage.setItem('csaWaitlist', JSON.stringify(waitlist));
-      
-      setStatus('success');
-      setMessage('🎉 Welcome to the waitlist! We\'ll keep you updated.');
-      setEmail('');
-      setName('');
-      
-      // Reset after 5 seconds
-      setTimeout(() => {
-        setStatus('idle');
-        setMessage('');
-      }, 5000);
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStatus('success');
+        setMessage('🎉 Welcome to the waitlist! We\'ll keep you updated.');
+        setEmail('');
+        setName('');
+        
+        // Reset after 5 seconds
+        setTimeout(() => {
+          setStatus('idle');
+          setMessage('');
+        }, 5000);
+      } else {
+        setStatus('error');
+        setMessage(data.message || 'Something went wrong. Please try again.');
+      }
     } catch (error) {
+      console.error('Error submitting to waitlist:', error);
       setStatus('error');
-      setMessage('Something went wrong. Please try again.');
+      setMessage('Failed to connect to server. Please try again later.');
     }
   };
 

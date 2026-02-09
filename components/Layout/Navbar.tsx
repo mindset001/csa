@@ -11,6 +11,7 @@ const navItems: NavItem[] = [
   { label: 'About Us', href: '#about' },
   { label: 'Why Us', href: '#why-us' },
   { label: 'Newsletter', href: '#newsletter' },
+  { label: 'CS Academy', href: 'https://academy.csalliance.tech/' }
 ];
 
 export const Navbar: React.FC = () => {
