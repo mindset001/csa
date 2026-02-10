@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, Mail, AlertCircle, Shield } from 'lucide-react';
 import { MagnetButton } from '../UI/MagnetButton';
+import { API_ENDPOINTS } from '../../config';
 import { Logo } from '../UI/Logo';
 
 export const AdminLogin: React.FC = () => {
@@ -19,7 +20,7 @@ export const AdminLogin: React.FC = () => {
 
     try {
       // Call backend API for authentication
-      const response = await fetch('http://localhost:5000/api/admin/login', {
+      const response = await fetch(API_ENDPOINTS.adminLogin, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

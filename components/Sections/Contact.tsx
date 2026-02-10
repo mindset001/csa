@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Send, Calendar, Clock, ArrowRight, CheckCircle, AlertCircle } from 'lucide-react';
 import { MagnetButton } from '../UI/MagnetButton';
+import { API_ENDPOINTS } from '../../config';
 
 export const Contact: React.FC = () => {
   const [targetDate, setTargetDate] = useState<Date | null>(null);
@@ -95,7 +96,7 @@ export const Contact: React.FC = () => {
     setStatus('loading');
     
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const response = await fetch(API_ENDPOINTS.contact, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,7 +151,7 @@ export const Contact: React.FC = () => {
     setWebinarStatus('loading');
     
     try {
-      const response = await fetch('http://localhost:5000/api/webinar', {
+      const response = await fetch(API_ENDPOINTS.webinar, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

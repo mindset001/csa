@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
 import { MagnetButton } from '../UI/MagnetButton';
+import { API_ENDPOINTS } from '../../config';
 
 export const Newsletter: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -30,7 +31,7 @@ export const Newsletter: React.FC = () => {
     
     try {
       // Call backend API
-      const response = await fetch('http://localhost:5000/api/waitlist', {
+      const response = await fetch(API_ENDPOINTS.waitlist, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Logo } from '../UI/Logo';
 import { MagnetButton } from '../UI/MagnetButton';
+import { API_ENDPOINTS, API_URL } from '../../config';
 
 interface WaitlistEntry {
   name: string;
@@ -66,7 +67,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchWaitlist = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/waitlist');
+      const response = await fetch(API_ENDPOINTS.waitlist);
       const data = await response.json();
       
       if (data.success) {
@@ -80,7 +81,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchContacts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/contact');
+      const response = await fetch(API_ENDPOINTS.contact);
       const data = await response.json();
       
       if (data.success) {
@@ -94,7 +95,7 @@ export const AdminDashboard: React.FC = () => {
 
   const fetchWebinar = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/webinar');
+      const response = await fetch(API_ENDPOINTS.webinar);
       const data = await response.json();
       
       if (data.success) {
@@ -187,7 +188,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteEntry = async (email: string) => {
     if (confirm('Are you sure you want to delete this entry?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/waitlist/${encodeURIComponent(email)}`, {
+        const response = await fetch(`${API_URL}/api/waitlist/${encodeURIComponent(email)}`, {
           method: 'DELETE',
         });
         
@@ -208,7 +209,7 @@ export const AdminDashboard: React.FC = () => {
   const handleDeleteContact = async (id: number) => {
     if (confirm('Are you sure you want to delete this contact?')) {
       try {
-        const response = await fetch(`http://localhost:5000/api/contact/${id}`, {
+        const response = await fetch(`${API_URL}/api/contact/${id}`, {
           method: 'DELETE',
         });
         
