@@ -61,8 +61,19 @@ export const Hero: React.FC = () => {
           </p>
           
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
-            <MagnetButton variant="primary" onClick={scrollToContact}>
-              Contact Us <ArrowRight size={18} />
+            <MagnetButton 
+              variant="primary"
+              onClick={() => window.open('https://academy.csalliance.tech/', '_blank')}
+              className="px-6 py-3 font-semibold"
+            >
+              CS Academy <ArrowRight size={18} />
+            </MagnetButton>
+            <MagnetButton 
+              variant="secondary"
+              onClick={() => window.open('https://safety.csalliance.tech/', '_blank')}
+              className="px-6 py-3 font-semibold"
+            >
+              CS HRM <ArrowRight size={18} />
             </MagnetButton>
           </div>
         </motion.div>
