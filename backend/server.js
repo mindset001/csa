@@ -1,12 +1,18 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import { waitlistDB, contactDB, webinarDB } from './database.js';
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ Connected to MongoDB'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // CORS configuration - Allow all origins in production for now
 const corsOptions = {
@@ -51,9 +57,9 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // Get all waitlist entries
-app.get('/api/waitlist', (req, res) => {
+app.get('/api/waitlist', async (req, res) => {
   try {
-    const entries = waitlistDB.getAll();
+    const entries = await waitlistDB.getAll();
     res.json({
       success: true,
       data: entries
@@ -68,9 +74,9 @@ app.get('/api/waitlist', (req, res) => {
 });
 
 // Get waitlist statistics
-app.get('/api/waitlist/stats', (req, res) => {
+app.get('/api/waitlist/stats', async (req, res) => {
   try {
-    const stats = waitlistDB.getStats();
+    const stats = await waitlistDB.getStats();
     res.json({
       success: true,
       data: stats
@@ -85,7 +91,7 @@ app.get('/api/waitlist/stats', (req, res) => {
 });
 
 // Add new waitlist entry
-app.post('/api/waitlist', (req, res) => {
+app.post('/api/waitlist', async (req, res) => {
   const { name, email } = req.body;
 
   // Validation
@@ -107,7 +113,7 @@ app.post('/api/waitlist', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString();
-    const result = waitlistDB.add(name, email, timestamp);
+    const result = await waitlistDB.add(name, email, timestamp);
 
     if (result.success) {
       res.status(201).json({
@@ -131,11 +137,11 @@ app.post('/api/waitlist', (req, res) => {
 });
 
 // Delete waitlist entry
-app.delete('/api/waitlist/:email', (req, res) => {
+app.delete('/api/waitlist/:email', async (req, res) => {
   const { email } = req.params;
 
   try {
-    const deleted = waitlistDB.delete(email);
+    const deleted = await waitlistDB.delete(email);
 
     if (deleted) {
       res.json({
@@ -158,9 +164,9 @@ app.delete('/api/waitlist/:email', (req, res) => {
 });
 
 // Contact form endpoints
-app.get('/api/contact', (req, res) => {
+app.get('/api/contact', async (req, res) => {
   try {
-    const entries = contactDB.getAll();
+    const entries = await contactDB.getAll();
     res.json({
       success: true,
       data: entries
@@ -174,7 +180,7 @@ app.get('/api/contact', (req, res) => {
   }
 });
 
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { name, jobTitle, company, email, phone, message } = req.body;
 
   // Validation
@@ -196,7 +202,7 @@ app.post('/api/contact', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString();
-    const result = contactDB.add(name, jobTitle, company, email, phone, message, timestamp);
+    const result = await contactDB.add(name, jobTitle, company, email, phone, message, timestamp);
 
     if (result.success) {
       res.status(201).json({
@@ -219,11 +225,11 @@ app.post('/api/contact', (req, res) => {
   }
 });
 
-app.delete('/api/contact/:id', (req, res) => {
+app.delete('/api/contact/:id', async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deleted = contactDB.delete(parseInt(id));
+    const deleted = await contactDB.delete(id);
 
     if (deleted) {
       res.json({
@@ -246,9 +252,9 @@ app.delete('/api/contact/:id', (req, res) => {
 });
 
 // Webinar registration endpoint
-app.get('/api/webinar', (req, res) => {
+app.get('/api/webinar', async (req, res) => {
   try {
-    const entries = webinarDB.getAll();
+    const entries = await webinarDB.getAll();
     res.json({
       success: true,
       data: entries
@@ -262,7 +268,7 @@ app.get('/api/webinar', (req, res) => {
   }
 });
 
-app.post('/api/webinar', (req, res) => {
+app.post('/api/webinar', async (req, res) => {
   const { email } = req.body;
 
   // Validation
@@ -284,7 +290,7 @@ app.post('/api/webinar', (req, res) => {
 
   try {
     const timestamp = new Date().toISOString();
-    const result = webinarDB.add(email, timestamp);
+    const result = await webinarDB.add(email, timestamp);
 
     if (result.success) {
       res.status(201).json({
